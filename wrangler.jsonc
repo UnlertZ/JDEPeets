@@ -1,25 +1,9 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "jdetankproject",
+  "name": "jdepeetsintern",
   "main": "_worker.js",
   "compatibility_date": "2024-09-30",
   "assets": {
     "directory": "."
-  },
-  "kv_namespaces": [
-    {
-      "binding": "MY_KV",
-      "id": "aec6a610-ec7c-49c4-aecf-5fe39cc05034"
-    }
-  ],
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "my-database",
-      "database_id": "jdefireextinguisher"
-    }
-  ],
-  "vars": {
-    "MY_VARIABLE": "my_value"
   }
 }
