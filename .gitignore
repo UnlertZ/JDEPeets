@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment & IDE
+.env
+.venv
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+*read_temp*.xlsx
+
+# ─── Wrangler (Local Dev Only — ห้ามขึ้น GitHub เพราะจะทำให้ Pages build ติด) ───
+wrangler.toml
+.wrangler/
+
+# ─── Node / npm ───
+node_modules/
+package-lock.json
+
+# ─── ZIP exports ───
+*.zip

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ลงทะเบียนสมาชิกใหม่ | FireTank</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-light d-flex flex-column justify-content-between min-vh-100">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-danger shadow-sm">
+    <div class="container-fluid px-3 px-md-4">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+        <img src="images/jdepeets_logo.svg" alt="JDE Peet's" height="36" style="filter: brightness(0) invert(1);">
+      </a>
+      <div class="d-flex align-items-center gap-2">
+        <a href="login.html" class="btn btn-outline-light btn-sm">
+          <i class="bi bi-box-arrow-in-right me-1"></i>เข้าสู่ระบบ
+        </a>
+        <a href="index.html" class="btn btn-outline-light btn-sm">
+          <i class="bi bi-house me-1"></i>หน้าแรก
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="container my-auto py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+
+        <div class="card shadow border-0 rounded-4 overflow-hidden">
+          <!-- Card Header Banner -->
+          <div class="bg-danger text-white text-center py-4 px-3 position-relative">
+            <div class="display-6 mb-2" style="color: #FFD166;">
+              <i class="bi bi-person-badge-fill"></i>
+            </div>
+            <h4 class="fw-bold mb-1 text-white" style="letter-spacing: 0.5px;">ลงทะเบียนสมาชิกใหม่</h4>
+            <small class="text-white opacity-90 d-block">สำหรับพนักงานผู้ตรวจเช็คสภาพถังดับเพลิง (สิทธิ์ P1)</small>
+          </div>
+
+          <!-- Card Body Form -->
+          <div class="card-body p-4">
+
+            <!-- Information Alert -->
+            <div class="alert alert-info py-2 px-3 small rounded-3 mb-3 d-flex align-items-center gap-2">
+              <i class="bi bi-info-circle-fill fs-5 text-primary"></i>
+              <div>
+                หลังลงทะเบียน ข้อมูลจะถูกส่งไปยัง <strong>Admin เพื่อรอการอนุมัติ</strong> ก่อน จึงจะสามารถเข้าสู่ระบบได้
+              </div>
+            </div>
+
+            <!-- Error Alert -->
+            <div id="registerErrorAlert" class="alert alert-danger d-none small py-2 mb-3" role="alert">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i><span id="registerErrorText"></span>
+            </div>
+
+            <!-- Success Box (Hidden initially) -->
+            <div id="registerSuccessBox" class="text-center py-4 d-none">
+              <div class="display-4 text-success mb-2">
+                <i class="bi bi-check-circle-fill"></i>
+              </div>
+              <h5 class="fw-bold text-dark">ส่งคำขอลงทะเบียนสำเร็จ!</h5>
+              <p class="text-muted small px-3">
+                ข้อมูลของคุณถูกส่งไปยังผู้ดูแลระบบ (Admin) เพื่อรอการอนุมัติเรียบร้อยแล้ว เมื่อได้รับการอนุมัติ ท่านจะได้รับสิทธิ์ระดับ <strong>P1</strong> เพื่อเข้าตรวจเช็คถังดับเพลิงได้ทันที
+              </p>
+              <div class="mt-4 d-flex justify-content-center gap-2">
+                <a href="login.html" class="btn btn-danger px-4">
+                  <i class="bi bi-box-arrow-in-right me-1"></i>ไปที่หน้าเข้าสู่ระบบ
+                </a>
+                <a href="index.html" class="btn btn-outline-secondary px-3">
+                  <i class="bi bi-house me-1"></i>หน้าแรก
+                </a>
+              </div>
+            </div>
+
+            <!-- Registration Form -->
+            <form id="registerForm" onsubmit="handleRegisterSubmit(event)">
+
+              <!-- Full Name (EmName) -->
+              <div class="mb-3">
+                <label for="emNameInput" class="form-label fw-semibold small text-secondary">
+                  <i class="bi bi-person me-1"></i>ชื่อ - นามสกุลพนักงาน <span class="text-danger">*</span>
+                </label>
+                <input type="text" id="emNameInput" class="form-control" placeholder="เช่น สมชาย ใจดี หรือ Somchai" required autofocus />
+              </div>
+
+              <!-- Username -->
+              <div class="mb-3">
+                <label for="usernameInput" class="form-label fw-semibold small text-secondary">
+                  <i class="bi bi-person-vcard me-1"></i>ชื่อผู้ใช้สำหรับเข้าระบบ (Username) <span class="text-danger">*</span>
+                </label>
+                <input type="text" id="usernameInput" class="form-control" placeholder="เช่น somchai_pd หรือ PD2_Inspector" required />
+                <div class="form-text small" style="font-size: 0.75rem;">ใช้สำหรับล็อกอินเข้าสู่ระบบ</div>
+              </div>
+
+              <!-- Password -->
+              <div class="mb-3">
+                <label for="passwordInput" class="form-label fw-semibold small text-secondary">
+                  <i class="bi bi-lock me-1"></i>รหัสผ่าน (Password) <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                  <input type="password" id="passwordInput" class="form-control" placeholder="อย่างน้อย 4 ตัวอักษร" required minlength="4" />
+                  <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('passwordInput', 'togglePassIcon')">
+                    <i class="bi bi-eye" id="togglePassIcon"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Confirm Password -->
+              <div class="mb-4">
+                <label for="confirmPasswordInput" class="form-label fw-semibold small text-secondary">
+                  <i class="bi bi-shield-lock me-1"></i>ยืนยันรหัสผ่านอีกครั้ง <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                  <input type="password" id="confirmPasswordInput" class="form-control" placeholder="ระบุรหัสผ่านให้ตรงกัน" required minlength="4" />
+                  <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('confirmPasswordInput', 'toggleConfirmIcon')">
+                    <i class="bi bi-eye" id="toggleConfirmIcon"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-danger btn-lg fw-semibold shadow-sm">
+                  <i class="bi bi-send-check me-1"></i>ส่งคำขอลงทะเบียน
+                </button>
+              </div>
+
+              <!-- Back to Login -->
+              <div class="text-center">
+                <span class="text-muted small">มีบัญชีผู้ใช้อยู่แล้ว?</span>
+                <a href="login.html" class="text-decoration-none fw-semibold text-danger small ms-1">
+                  เข้าสู่ระบบที่นี่
+                </a>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white text-muted py-3 text-center small shadow-sm">
+    <div class="container">
+      <span>🔥 FireTank Inspection System — Online Cloud Edition</span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/initial_data.js"></script>
+  <script src="js/auth.js"></script>
+
+  <script>
+    function togglePasswordVisibility(fieldId, iconId) {
+      const input = document.getElementById(fieldId);
+      const icon = document.getElementById(iconId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'bi bi-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'bi bi-eye';
+      }
+    }
+
+    async function handleRegisterSubmit(e) {
+      e.preventDefault();
+      const emName = document.getElementById('emNameInput').value.trim();
+      const u = document.getElementById('usernameInput').value.trim();
+      const p = document.getElementById('passwordInput').value.trim();
+      const cp = document.getElementById('confirmPasswordInput').value.trim();
+
+      const errBox = document.getElementById('registerErrorAlert');
+      const errText = document.getElementById('registerErrorText');
+      errBox.classList.add('d-none');
+
+      if (p !== cp) {
+        errBox.classList.remove('d-none');
+        errText.innerText = 'รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน';
+        return;
+      }
+
+      const res = await registerUser(u, p, emName);
+      if (res.success) {
+        document.getElementById('registerForm').classList.add('d-none');
+        document.getElementById('registerSuccessBox').classList.remove('d-none');
+      } else {
+        errBox.classList.remove('d-none');
+        errText.innerText = res.message;
+      }
+    }
+  </script>
+</body>
+</html>

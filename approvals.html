@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>อนุมัติสมาชิกและจัดการผู้ใช้ | FireTank Admin</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-danger shadow-sm sticky-top">
+    <div class="container-fluid px-3 px-md-4">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+        <img src="images/jdepeets_logo.svg" alt="JDE Peet's" height="36" style="filter: brightness(0) invert(1);">
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link fw-semibold" href="index.html">
+              <i class="bi bi-speedometer2 me-1"></i>แดชบอร์ด
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-semibold" href="check.html">
+              <i class="bi bi-clipboard2-check me-1"></i>ตรวจเช็คถัง
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active fw-semibold" href="approvals.html">
+              <i class="bi bi-person-check-fill me-1"></i>จัดการสมาชิก
+            </a>
+          </li>
+        </ul>
+
+        <div id="navbarAuthArea" class="d-flex align-items-center gap-2">
+          <a href="register.html" class="btn btn-outline-light btn-sm fw-semibold">
+            <i class="bi bi-person-plus me-1"></i>ลงทะเบียน
+          </a>
+          <a href="login.html" class="btn btn-warning btn-sm fw-bold">
+            <i class="bi bi-box-arrow-in-right me-1"></i>เข้าสู่ระบบ
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Flash Message Container -->
+  <div class="container-fluid px-3 px-md-4 mt-3" id="flashAlertArea"></div>
+
+  <!-- Main Content -->
+  <main class="container py-4 flex-grow-1" style="max-width: 1100px;">
+
+    <!-- Page Title -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h4 class="fw-bold text-dark mb-1">
+          <i class="bi bi-person-gear text-danger me-2"></i>จัดการสมาชิกและสิทธิ์การเข้าถึง
+        </h4>
+        <p class="text-muted small mb-0">อนุมัติคำขอลงทะเบียน / ปรับสิทธิ์ / ลบสมาชิกออกจากระบบ</p>
+      </div>
+      <a href="index.html" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>กลับหน้าหลัก
+      </a>
+    </div>
+
+    <!-- Alert Box for Action Feedback -->
+    <div id="actionFeedback" class="alert alert-success d-none py-2 px-3 small rounded-3 mb-3"></div>
+
+    <!-- Legend สิทธิ์ -->
+    <div class="d-flex flex-wrap gap-2 mb-4 small">
+      <span class="badge bg-warning text-dark px-3 py-2"><i class="bi bi-person me-1"></i>P1 — ตรวจเช็คถัง</span>
+      <span class="badge bg-danger px-3 py-2"><i class="bi bi-shield-fill me-1"></i>P2 — Admin (จัดการถัง+สมาชิก)</span>
+      <span class="badge px-3 py-2" style="background:#6f42c1;"><i class="bi bi-shield-fill-check me-1"></i>P3 — Super Admin (สิทธิ์สูงสุด)</span>
+    </div>
+
+    <!-- Section 1: Pending Approvals -->
+    <div class="card shadow-sm border-0 rounded-3 mb-4">
+      <div class="card-header bg-warning text-white py-3 px-4 d-flex justify-content-between align-items-center">
+        <div class="fw-bold">
+          <i class="bi bi-hourglass-split me-1 text-white"></i>รายการคำขอรอการอนุมัติ
+          <span id="pendingBadgeCount" class="badge bg-danger ms-1">0</span>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="text-center" style="width: 50px;">#</th>
+                <th>ชื่อผู้ใช้ (Username)</th>
+                <th>ชื่อ - นามสกุลพนักงาน</th>
+                <th class="text-center">สิทธิ์ที่จะได้รับ</th>
+                <th class="text-center">วันเวลาที่ลงทะเบียน</th>
+                <th class="text-center" style="width: 180px;">การดำเนินการ</th>
+              </tr>
+            </thead>
+            <tbody id="pendingTableBody">
+              <!-- Render via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Active Users Management -->
+    <div class="card shadow-sm border-0 rounded-3">
+      <div class="card-header bg-light py-3 px-4 d-flex justify-content-between align-items-center">
+        <div class="fw-bold text-secondary">
+          <i class="bi bi-people-fill me-1 text-primary"></i>รายชื่อสมาชิกที่ใช้งานอยู่
+          <span id="activeUserCount" class="badge bg-secondary ms-1">0</span>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-striped align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="text-center" style="width: 50px;">#</th>
+                <th>ชื่อผู้ใช้ (Username)</th>
+                <th>ชื่อ - นามสกุลพนักงาน</th>
+                <th class="text-center">ระดับสิทธิ์</th>
+                <th class="text-center">PermitDo</th>
+                <th class="text-center" style="width: 240px;">จัดการสิทธิ์</th>
+              </tr>
+            </thead>
+            <tbody id="activeUsersTableBody">
+              <!-- Render via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white text-muted py-3 mt-4 text-center small shadow-sm">
+    <div class="container">
+      <span>🔥 FireTank Inspection System — Online Cloud Edition</span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/initial_data.js"></script>
+  <script src="js/auth.js"></script>
+
+  <script>
+    let currentUserPermit = 0;
+
+    async function renderApprovalsPage() {
+      // 1. ตรวจสอบสิทธิ์ (เฉพาะ P2 หรือ P3)
+      if (!requireAuth(2)) return;
+
+      const me = getCurrentUser();
+      currentUserPermit = me ? me.PermitDo : 0;
+
+      let pendingUsers = getPendingUsers();
+      let activeUsers = getUsers();
+      try {
+        const res = await fetch('api/approvals');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.pending) pendingUsers = data.pending;
+          if (data.users) activeUsers = data.users;
+        }
+      } catch (e) {}
+
+      // อัปเดตจำนวน Badge
+      document.getElementById('pendingBadgeCount').innerText = pendingUsers.length;
+      document.getElementById('activeUserCount').innerText = activeUsers.length;
+
+      // ── ตารางรออนุมัติ ──
+      const pendingTbody = document.getElementById('pendingTableBody');
+      pendingTbody.innerHTML = '';
+
+      if (pendingUsers.length === 0) {
+        pendingTbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="text-center py-4 text-muted">
+              <i class="bi bi-check2-circle fs-3 text-success d-block mb-1"></i>
+              ไม่มีคำขอรอการอนุมัติในขณะนี้
+            </td>
+          </tr>
+        `;
+      } else {
+        pendingUsers.forEach((u, idx) => {
+          pendingTbody.innerHTML += `
+            <tr>
+              <td class="text-center text-muted small">${idx + 1}</td>
+              <td><strong class="text-primary">${u.Username}</strong></td>
+              <td>${u.EmName}</td>
+              <td class="text-center">
+                <span class="badge bg-warning text-dark">P1 (ตรวจเช็ค)</span>
+              </td>
+              <td class="text-center small text-muted">${u.RegisteredAt || '-'}</td>
+              <td class="text-center">
+                <button onclick="handleApprove('${u.Username}')" class="btn btn-success btn-sm py-1 px-2 me-1" title="อนุมัติ">
+                  <i class="bi bi-check-lg me-1"></i>อนุมัติ
+                </button>
+                <button onclick="handleReject('${u.Username}')" class="btn btn-outline-danger btn-sm py-1 px-2" title="ปฏิเสธ">
+                  <i class="bi bi-x-lg me-1"></i>ปฏิเสธ
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+      }
+
+      // ── ตารางสมาชิกที่ใช้งานอยู่ ──
+      const activeTbody = document.getElementById('activeUsersTableBody');
+      activeTbody.innerHTML = '';
+
+      const myUsername = me ? me.Username.toLowerCase() : '';
+
+      activeUsers.forEach((u, idx) => {
+        const isP3 = u.PermitDo >= 3;
+        const isP2 = u.PermitDo >= 2;
+        const isMe = u.Username.toLowerCase() === myUsername;
+
+        // badge สีตาม rank
+        let badgeHtml = '';
+        if (isP3) {
+          badgeHtml = `<span class="badge" style="background:#6f42c1;">P3 — Super Admin</span>`;
+        } else if (isP2) {
+          badgeHtml = `<span class="badge bg-danger">P2 — Admin</span>`;
+        } else {
+          badgeHtml = `<span class="badge bg-warning text-dark">P1 — User</span>`;
+        }
+
+        // ปุ่มปรับสิทธิ์ — P2 ห้ามแตะ P3, ห้ามแตะตัวเอง
+        const canEdit = !isMe && (currentUserPermit >= 3 || !isP3);
+        let permitBtns = '';
+        if (canEdit) {
+          if (!isP2 && !isP3) {
+            // P1 → ปรับขึ้น P2
+            permitBtns += `
+              <button onclick="handleUpgradePermit('${u.Username}', 2)" 
+                      class="btn btn-outline-danger btn-sm py-0 px-2 me-1" title="เลื่อนเป็น P2-Admin">
+                <i class="bi bi-arrow-up-circle me-1"></i>P2
+              </button>`;
+            if (currentUserPermit >= 3) {
+              permitBtns += `
+                <button onclick="handleUpgradePermit('${u.Username}', 3)" 
+                        class="btn btn-sm py-0 px-2 me-1" style="background:#6f42c1;color:#fff;" title="เลื่อนเป็น P3 (Super Admin)">
+                  <i class="bi bi-arrow-up-circle me-1"></i>P3
+                </button>`;
+            }
+          } else if (isP2 && !isP3 && currentUserPermit >= 3) {
+            // P2 → ปรับขึ้น P3 (เฉพาะ P3 ทำได้)
+            permitBtns += `
+              <button onclick="handleUpgradePermit('${u.Username}', 3)" 
+                      class="btn btn-sm py-0 px-2 me-1" style="background:#6f42c1;color:#fff;" title="เลื่อนเป็น P3">
+                <i class="bi bi-arrow-up-circle me-1"></i>P3
+              </button>`;
+          }
+          if (isP2 && !isP3) {
+            // P2 → ลดกลับ P1
+            permitBtns += `
+              <button onclick="handleDowngradePermit('${u.Username}', 1)" 
+                      class="btn btn-outline-warning btn-sm py-0 px-2 me-1" title="ลดเป็น P1">
+                <i class="bi bi-arrow-down-circle me-1"></i>P1
+              </button>`;
+          } else if (isP3 && currentUserPermit >= 3) {
+            // P3 → ลดกลับ P2
+            permitBtns += `
+              <button onclick="handleDowngradePermit('${u.Username}', 2)" 
+                      class="btn btn-outline-secondary btn-sm py-0 px-2 me-1" title="ลดเป็น P2">
+                <i class="bi bi-arrow-down-circle me-1"></i>P2
+              </button>`;
+          }
+        }
+
+        // ปุ่มลบ — ห้ามลบตัวเอง, P2 ห้ามลบ P3
+        const canDelete = !isMe && (currentUserPermit >= 3 || !isP3);
+        const deleteBtn = canDelete
+          ? `<button onclick="handleDeleteUser('${u.Username}')" class="btn btn-danger btn-sm py-0 px-2" title="ลบออกจากระบบ">
+               <i class="bi bi-trash-fill"></i>
+             </button>`
+          : '';
+
+        const selfBadge = isMe ? `<span class="badge bg-info-subtle text-info-emphasis border border-info-subtle ms-1 small">ฉัน</span>` : '';
+
+        activeTbody.innerHTML += `
+          <tr ${isP3 ? 'class="table-active"' : ''}>
+            <td class="text-center text-muted small">${idx + 1}</td>
+            <td><strong>${u.Username}</strong>${selfBadge}</td>
+            <td>${u.EmName || '-'}</td>
+            <td class="text-center">${badgeHtml}</td>
+            <td class="text-center small fw-bold">${u.PermitDo}</td>
+            <td class="text-center text-nowrap">
+              ${permitBtns}
+              ${deleteBtn}
+              ${!canEdit && !canDelete ? '<span class="text-muted small"><i class="bi bi-lock-fill me-1"></i>ไม่สามารถแก้ไขได้</span>' : ''}
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function showFeedback(text, isSuccess = true) {
+      const fb = document.getElementById('actionFeedback');
+      fb.className = `alert alert-${isSuccess ? 'success' : 'danger'} py-2 px-3 small rounded-3 mb-3`;
+      fb.innerHTML = `<i class="bi bi-${isSuccess ? 'check-circle-fill' : 'exclamation-triangle-fill'} me-1"></i>${text}`;
+      fb.classList.remove('d-none');
+      setTimeout(() => fb.classList.add('d-none'), 5000);
+    }
+
+    async function handleApprove(username) {
+      if (confirm(`ยืนยันการอนุมัติผู้ใช้ "${username}" เพื่อให้สิทธิ์ตรวจเช็ค (P1) หรือไม่?`)) {
+        const res = await approveUser(username);
+        if (res.success) {
+          showFeedback(`อนุมัติผู้ใช้ "${username}" (คุณ ${res.user.EmName}) เรียบร้อยแล้ว ✅`);
+          await renderApprovalsPage();
+          renderNavbarAuth();
+        } else {
+          showFeedback(res.message, false);
+        }
+      }
+    }
+
+    async function handleReject(username) {
+      if (confirm(`ยืนยันการปฏิเสธคำขอลงทะเบียนของ "${username}" หรือไม่?`)) {
+        const res = await rejectUser(username);
+        if (res.success) {
+          showFeedback(`ปฏิเสธคำขอของ "${username}" เรียบร้อยแล้ว`, false);
+          await renderApprovalsPage();
+          renderNavbarAuth();
+        } else {
+          showFeedback(res.message, false);
+        }
+      }
+    }
+
+    async function handleUpgradePermit(username, newPermit) {
+      const rankName = newPermit >= 3 ? 'P3 (Super Admin)' : 'P2 (Admin)';
+      if (confirm(`ยืนยันการเลื่อนสิทธิ์ "${username}" เป็น ${rankName} หรือไม่?`)) {
+        const res = await updateUserPermit(username, newPermit);
+        if (res.success) {
+          showFeedback(`เลื่อนสิทธิ์ "${username}" เป็น ${res.newRank} เรียบร้อยแล้ว ✅`);
+          await renderApprovalsPage();
+        } else {
+          showFeedback(res.message, false);
+        }
+      }
+    }
+
+    async function handleDowngradePermit(username, newPermit) {
+      const rankName = newPermit >= 2 ? 'P2 (Admin)' : 'P1 (User)';
+      if (confirm(`ยืนยันการลดสิทธิ์ "${username}" เป็น ${rankName} หรือไม่?`)) {
+        const res = await updateUserPermit(username, newPermit);
+        if (res.success) {
+          showFeedback(`ลดสิทธิ์ "${username}" เป็น ${res.newRank} เรียบร้อยแล้ว`);
+          await renderApprovalsPage();
+        } else {
+          showFeedback(res.message, false);
+        }
+      }
+    }
+
+    async function handleDeleteUser(username) {
+      if (confirm(`⚠️ ยืนยันการลบผู้ใช้ "${username}" ออกจากระบบถาวร?\nการกระทำนี้ไม่สามารถย้อนกลับได้`)) {
+        const res = await deleteActiveUser(username);
+        if (res.success) {
+          showFeedback(`ลบผู้ใช้ "${username}" ออกจากระบบเรียบร้อยแล้ว`, false);
+          await renderApprovalsPage();
+          renderNavbarAuth();
+        } else {
+          showFeedback(res.message, false);
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', renderApprovalsPage);
+  </script>
+</body>
+</html>
