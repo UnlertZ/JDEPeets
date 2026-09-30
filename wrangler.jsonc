@@ -3,9 +3,6 @@
   "name": "jdepeetsintern",
   "main": "_worker.js",
   "compatibility_date": "2024-09-30",
-  "assets": {
-    "directory": "."
-  },
   "d1_databases": [
     {
       "binding": "DB",
