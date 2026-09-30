@@ -5,5 +5,11 @@
   "compatibility_date": "2024-09-30",
   "assets": {
     "directory": "."
-  }
+  },
+  "kv_namespaces": [
+    {
+      "binding": "DB",
+      "id": "aec6a610-ec7c-49c4-aecf-5fe39cc05034"
+    }
+  ]
 }
