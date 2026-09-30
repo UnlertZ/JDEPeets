@@ -6,10 +6,11 @@
   "assets": {
     "directory": "."
   },
-  "kv_namespaces": [
+  "d1_databases": [
     {
       "binding": "DB",
-      "id": "aec6a610-ec7c-49c4-aecf-5fe39cc05034"
+      "database_name": "jdefireextinguisher",
+      "database_id": "aec6a610-ec7c-49c4-aecf-5fe39cc05034"
     }
   ]
 }
