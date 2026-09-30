@@ -1,0 +1,13 @@
+_worker.js
+wrangler.jsonc
+wrangler.toml
+.git
+.gitignore
+.assetsignore
+schema.sql
+seed.sql
+README.md
+requirements.txt
+app.py
+*.zip
+*.xlsx
