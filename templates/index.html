@@ -1,0 +1,324 @@
+{% extends 'base.html' %}
+{% block title %}แดชบอร์ด – ถังดับเพลิง{% endblock %}
+
+{% block content %}
+
+<!-- ══════════════ Summary Cards ══════════════ -->
+<div class="row g-3 mb-4">
+
+  <div class="col-6 col-sm-3">
+    <div class="card text-white h-100 shadow-sm border-0" style="background:#1565C0">
+      <div class="card-body text-center py-3">
+        <div class="display-5 fw-bold">{{ total }}</div>
+        <div class="small mt-1 opacity-75">
+          <i class="bi bi-fire me-1"></i>ถังทั้งหมด
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-sm-3">
+    <div class="card text-white h-100 shadow-sm border-0" style="background:#2E7D32">
+      <div class="card-body text-center py-3">
+        <div class="display-5 fw-bold">{{ checked }}</div>
+        <div class="small mt-1 opacity-75">
+          <i class="bi bi-clipboard2-check-fill me-1"></i>ตรวจเช็คแล้ว
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-sm-3">
+    <div class="card text-dark h-100 shadow-sm border-0" style="background:#F9A825">
+      <div class="card-body text-center py-3">
+        <div class="display-5 fw-bold">{{ not_checked }}</div>
+        <div class="small mt-1 opacity-75">
+          <i class="bi bi-clock-history me-1"></i>ยังไม่ได้ตรวจ
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-sm-3">
+    <div class="card text-white h-100 shadow-sm border-0" style="background:#C62828">
+      <div class="card-body text-center py-3">
+        <div class="display-5 fw-bold">{{ not_ready }}</div>
+        <div class="small mt-1 opacity-75">
+          <i class="bi bi-exclamation-triangle-fill me-1"></i>ไม่พร้อมใช้งาน
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════ Filter Bar ══════════════ -->
+<div class="card shadow-sm mb-3 border-0">
+  <div class="card-body py-2 px-3">
+    <div class="row g-2 align-items-center">
+      <div class="col-auto">
+        <span class="fw-semibold text-secondary small">
+          <i class="bi bi-funnel-fill me-1"></i>กรองข้อมูล
+        </span>
+      </div>
+      <div class="col-12 col-sm-auto flex-grow-1">
+        <select id="filterType" class="form-select form-select-sm">
+          <option value="">— ทุกประเภท —</option>
+          {% for t in types %}
+          <option value="{{ t }}">{{ t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12 col-sm-auto flex-grow-1">
+        <select id="filterArea" class="form-select form-select-sm">
+          <option value="">— ทุกพื้นที่ —</option>
+          {% for a in areas %}
+          <option value="{{ a }}">{{ a }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-6 col-sm-auto">
+        <select id="filterStatus" class="form-select form-select-sm">
+          <option value="">— ทุกความพร้อม —</option>
+          <option value="Ready">พร้อมใช้งาน</option>
+          <option value="Not Ready">ไม่พร้อม</option>
+        </select>
+      </div>
+      <div class="col-6 col-sm-auto">
+        <select id="filterCheck" class="form-select form-select-sm">
+          <option value="">— ทุกสถานะตรวจ —</option>
+          <option value="เช็คแล้ว">เช็คแล้ว</option>
+          <option value="ยังไม่เช็ค">ยังไม่เช็ค</option>
+        </select>
+      </div>
+      <div class="col-auto">
+        <button id="clearFilter" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-counterclockwise me-1"></i>รีเซ็ต
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ Data Table ══════════════ -->
+<div class="card shadow-sm border-0">
+  <div class="card-header d-flex align-items-center justify-content-between
+              bg-dark text-white py-2 px-3">
+    <span class="fw-semibold">
+      <i class="bi bi-table me-2"></i>รายการถังดับเพลิงทั้งหมด
+    </span>
+    <div>
+      {% if user %}
+      <a href="{{ url_for('check_tank') }}"
+         class="btn btn-outline-light btn-sm fw-semibold me-1">
+        <i class="bi bi-clipboard2-check me-1"></i>ตรวจเช็คถัง
+      </a>
+      {% endif %}
+      {% if user and user.PermitDo >= 2 %}
+      <a href="{{ url_for('add_tank') }}"
+         class="btn btn-danger btn-sm fw-semibold">
+        <i class="bi bi-plus-lg me-1"></i>เพิ่มถังใหม่
+      </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table id="tankTable" class="table table-hover table-striped mb-0 align-middle"
+             style="width:100%">
+        <thead class="table-dark small">
+          <tr>
+            <th class="text-center">#</th>
+            <th>รหัสถัง</th>
+            <th>ประเภท</th>
+            <th class="text-center">น้ำหนัก (lb)</th>
+            <th>พื้นที่</th>
+            <th class="text-center">วันที่เริ่มใช้</th>
+            <th class="text-center">ตรวจล่าสุด</th>
+            <th class="text-center">สถานะตรวจ</th>
+            <th class="text-center">ความพร้อม</th>
+            <th class="text-center">อายุถัง</th>
+            <th class="text-center">ผู้ตรวจ</th>
+            <th class="text-center">รูปถัง</th>
+            {% if user %}
+            <th class="text-center">จัดการ</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for tank in tanks %}
+          <tr data-type="{{ tank.Types }}"
+              data-area="{{ tank.Area }}"
+              data-status="{{ tank.ReadyorNot }}"
+              data-check="{{ tank.Tankcheck }}">
+
+            <td class="text-center text-muted small">{{ loop.index }}</td>
+
+            <td>
+              <span class="fw-bold text-danger">{{ tank.FireTank }}</span>
+            </td>
+
+            <td class="small">{{ tank.Types or '—' }}</td>
+
+            <td class="text-center small">
+              {{ tank['Weight (lb)'] if tank['Weight (lb)'] else '—' }}
+            </td>
+
+            <td class="small">{{ tank.Area or '—' }}</td>
+
+            <td class="text-center small">{{ tank.Inuse or '—' }}</td>
+            <td class="text-center small">{{ tank.Lastcheck or '—' }}</td>
+
+            <td class="text-center">
+              {% if (tank.Tankcheck or '') == 'เช็คแล้ว' %}
+                <span class="badge rounded-pill bg-success">
+                  <i class="bi bi-check-lg me-1"></i>เช็คแล้ว
+                </span>
+              {% else %}
+                <span class="badge rounded-pill bg-warning text-dark">
+                  <i class="bi bi-clock me-1"></i>ยังไม่เช็ค
+                </span>
+              {% endif %}
+            </td>
+
+            <td class="text-center">
+              {% if tank.ReadyorNot == 'Ready' %}
+                <span class="badge rounded-pill bg-success">
+                  <i class="bi bi-check-circle me-1"></i>พร้อม
+                </span>
+              {% else %}
+                <span class="badge rounded-pill bg-danger">
+                  <i class="bi bi-x-circle me-1"></i>ไม่พร้อม
+                </span>
+              {% endif %}
+            </td>
+
+            <td class="text-center small">
+              {{ tank.Exptank if tank.Exptank else '—' }}
+            </td>
+
+            <td class="text-center small">
+              {% if tank.Inspector %}
+                <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle">
+                  <i class="bi bi-person-check me-1"></i>{{ tank.Inspector }}
+                </span>
+              {% else %}
+                <span class="text-muted">—</span>
+              {% endif %}
+            </td>
+
+            <!-- Thumbnail -->
+            <td class="text-center">
+              {% if tank.PicTank %}
+                <a href="{{ url_for('static', filename=tank.PicTank) }}"
+                   target="_blank" data-bs-toggle="tooltip" title="คลิกดูรูปเต็ม">
+                  <img src="{{ url_for('static', filename=tank.PicTank) }}"
+                       class="rounded border"
+                       style="width:42px;height:42px;object-fit:cover;">
+                </a>
+              {% else %}
+                <span class="text-muted small">—</span>
+              {% endif %}
+            </td>
+
+            <!-- Action buttons (only for logged-in users) -->
+            {% if user %}
+            <td class="text-center">
+              <!-- ตรวจเช็ค: ทั้ง P1 และ P2 ทำได้ -->
+              <a href="{{ url_for('check_tank', tank_id=tank.FireTank) }}"
+                 class="btn btn-success btn-sm me-1 py-0"
+                 title="ตรวจเช็คสภาพถัง">
+                <i class="bi bi-clipboard2-check-fill"></i>
+              </a>
+              <!-- แก้ไข และ ลบ: เฉพาะ Admin (PermitDo >= 2) เท่านั้น -->
+              {% if user.PermitDo >= 2 %}
+              <a href="{{ url_for('edit_tank', tank_id=tank.FireTank) }}"
+                 class="btn btn-warning btn-sm me-1 py-0"
+                 title="แก้ไข">
+                <i class="bi bi-pencil-fill"></i>
+              </a>
+              <form method="post"
+                    action="{{ url_for('delete_tank', tank_id=tank.FireTank) }}"
+                    class="d-inline"
+                    onsubmit="return confirm('⚠️ ยืนยันลบถัง {{ tank.FireTank }}?\nการดำเนินการนี้ไม่สามารถย้อนกลับได้')">
+                <button type="submit" class="btn btn-danger btn-sm py-0" title="ลบ">
+                  <i class="bi bi-trash-fill"></i>
+                </button>
+              </form>
+              {% endif %}
+            </td>
+            {% endif %}
+
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(function () {
+
+  /* ── DataTable ── */
+  var table = $('#tankTable').DataTable({
+    pageLength: 25,
+    order: [[1, 'asc']],
+    language: {
+      emptyTable:     'ไม่มีข้อมูลในตาราง',
+      info:           'แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ',
+      infoEmpty:      'แสดง 0 ถึง 0 จาก 0 รายการ',
+      infoFiltered:   '(กรองจาก _MAX_ รายการทั้งหมด)',
+      lengthMenu:     'แสดง _MENU_ รายการ',
+      loadingRecords: 'กำลังโหลด...',
+      processing:     'กำลังประมวลผล...',
+      search:         'ค้นหา:',
+      zeroRecords:    'ไม่พบข้อมูลที่ตรงกัน',
+      paginate: {
+        first:    'หน้าแรก',
+        last:     'หน้าสุดท้าย',
+        next:     'ถัดไป',
+        previous: 'ก่อนหน้า'
+      }
+    },
+    columnDefs: [
+      { orderable: false, targets: [0, -1] }
+    ]
+  });
+
+  /* ── Custom dropdown filters using data-* attributes ── */
+  $.fn.dataTable.ext.search.push(function (settings, _data, _idx, _row, counter) {
+    var node       = table.row(counter).node();
+    var typeFilter   = $('#filterType').val();
+    var areaFilter   = $('#filterArea').val();
+    var statusFilter = $('#filterStatus').val();
+    var checkFilter  = $('#filterCheck').val();
+
+    if (typeFilter   && $(node).data('type')   !== typeFilter)   return false;
+    if (areaFilter   && $(node).data('area')   !== areaFilter)   return false;
+    if (statusFilter && $(node).data('status') !== statusFilter) return false;
+    if (checkFilter  && $(node).data('check')  !== checkFilter)  return false;
+
+    return true;
+  });
+
+  $('#filterType, #filterArea, #filterStatus, #filterCheck').on('change', function () {
+    table.draw();
+  });
+
+  $('#clearFilter').on('click', function () {
+    $('#filterType, #filterArea, #filterStatus, #filterCheck').val('');
+    table.draw();
+  });
+
+  /* ── Bootstrap tooltips ── */
+  $('[data-bs-toggle="tooltip"]').each(function () {
+    new bootstrap.Tooltip(this);
+  });
+});
+</script>
+{% endblock %}

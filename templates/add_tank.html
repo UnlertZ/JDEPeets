@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% block title %}เพิ่มถังดับเพลิง{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-md-9 col-lg-7">
+
+    <!-- Header -->
+    <div class="d-flex align-items-center gap-2 mb-3">
+      <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>กลับ
+      </a>
+      <h5 class="mb-0 fw-bold">
+        <i class="bi bi-plus-circle-fill text-danger me-2"></i>เพิ่มถังดับเพลิงใหม่
+      </h5>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-3">
+      <div class="card-body p-4">
+        <form method="post" enctype="multipart/form-data" novalidate>
+
+          <!-- Row 1: ID + Type -->
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-4">
+              <label class="form-label fw-semibold small">
+                <span class="text-danger">*</span> รหัสถัง
+              </label>
+              <input type="text" name="FireTank" class="form-control text-uppercase"
+                     placeholder="เช่น EX50" required
+                     pattern="[A-Za-z0-9]+" maxlength="10" />
+              <div class="form-text">ตัวอักษรและตัวเลขเท่านั้น</div>
+            </div>
+            <div class="col-12 col-sm-8">
+              <label class="form-label fw-semibold small">
+                <span class="text-danger">*</span> ประเภทถัง
+              </label>
+              <input type="text" name="Types" class="form-control"
+                     list="typeList" placeholder="เลือกหรือพิมพ์ประเภท" required />
+              <datalist id="typeList">
+                {% for t in types %}
+                <option value="{{ t }}"></option>
+                {% endfor %}
+              </datalist>
+            </div>
+          </div>
+
+          <!-- Row 2: Weight + Area -->
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-4">
+              <label class="form-label fw-semibold small">น้ำหนัก (lb)</label>
+              <input type="number" name="Weight" class="form-control"
+                     placeholder="เช่น 10" min="0" step="any" />
+            </div>
+            <div class="col-12 col-sm-8">
+              <label class="form-label fw-semibold small">
+                <span class="text-danger">*</span> พื้นที่/ตำแหน่ง
+              </label>
+              <input type="text" name="Area" class="form-control"
+                     list="areaList" placeholder="เลือกหรือพิมพ์พื้นที่" required />
+              <datalist id="areaList">
+                {% for a in areas %}
+                <option value="{{ a }}"></option>
+                {% endfor %}
+              </datalist>
+            </div>
+          </div>
+
+          <!-- Row 3: Inuse + Lastcheck + Inspector + Tankcheck -->
+          <div class="row g-3 mb-3">
+            <div class="col-6 col-sm-3">
+              <label class="form-label fw-semibold small">วันที่เริ่มใช้งาน</label>
+              <input type="text" name="Inuse" class="form-control"
+                     placeholder="เช่น 01/01/2022" />
+            </div>
+            <div class="col-6 col-sm-3">
+              <label class="form-label fw-semibold small">เวลาตรวจล่าสุด</label>
+              <input type="text" name="Lastcheck" class="form-control"
+                     placeholder="เช่น 2026-09-29 15:20" />
+            </div>
+            <div class="col-6 col-sm-3">
+              <label class="form-label fw-semibold small">ผู้ตรวจ (Inspector)</label>
+              <input type="text" name="Inspector" class="form-control"
+                     placeholder="ชื่อผู้ตรวจ เช่น Halls" />
+            </div>
+            <div class="col-6 col-sm-3">
+              <label class="form-label fw-semibold small">สถานะการตรวจ</label>
+              <div class="d-flex gap-3 mt-1">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio"
+                         name="Tankcheck" id="chkYes" value="เช็คแล้ว" />
+                  <label class="form-check-label text-success fw-semibold" for="chkYes">
+                    <i class="bi bi-check-circle me-1"></i>เช็คแล้ว
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio"
+                         name="Tankcheck" id="chkNo" value="ยังไม่เช็ค" checked />
+                  <label class="form-check-label text-warning fw-semibold" for="chkNo">
+                    <i class="bi bi-clock me-1"></i>ยังไม่เช็ค
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 4: Images -->
+          <div class="row g-3 mb-4">
+            <div class="col-12 col-sm-6">
+              <label class="form-label fw-semibold small">
+                <i class="bi bi-image me-1"></i>รูปถัง (PicTank)
+              </label>
+              <input type="file" name="PicTank" class="form-control"
+                     accept="image/*" id="picTankInput"
+                     onchange="previewImage(this, 'previewTank')" />
+              <div id="previewTank" class="mt-2"></div>
+            </div>
+            <div class="col-12 col-sm-6">
+              <label class="form-label fw-semibold small">
+                <i class="bi bi-image me-1"></i>รูปพื้นที่ (PicArea)
+              </label>
+              <input type="file" name="PicArea" class="form-control"
+                     accept="image/*" id="picAreaInput"
+                     onchange="previewImage(this, 'previewArea')" />
+              <div id="previewArea" class="mt-2"></div>
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <div class="d-flex gap-2 justify-content-end border-top pt-3">
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">
+              <i class="bi bi-x-lg me-1"></i>ยกเลิก
+            </a>
+            <button type="submit" class="btn btn-danger fw-semibold px-4">
+              <i class="bi bi-plus-circle me-1"></i>บันทึกถังใหม่
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function previewImage(input, targetId) {
+  var target = document.getElementById(targetId);
+  target.innerHTML = '';
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      target.innerHTML = '<img src="' + e.target.result +
+        '" class="img-thumbnail mt-1" style="max-height:120px;object-fit:contain;">';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+</script>
+{% endblock %}
