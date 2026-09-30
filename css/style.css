@@ -1,0 +1,406 @@
+/* ─── JDE Peet's Brand Identity Stylesheet ─── */
+:root {
+  /* Official JDE Peet's Palette extracted from Brand Guidelines & Media */
+  --jde-terracotta: #A04830;        /* Roasted Coffee Terracotta / Brick Red (Hero Block) */
+  --jde-terracotta-dark: #843823;   /* Deep Terracotta Hover */
+  --jde-terracotta-light: #F7EFE9;  /* Soft Terracotta Tint */
+  --jde-espresso: #3F3A31;          /* Dark Charcoal Espresso (Logo Block & Headings) */
+  --jde-espresso-dark: #2B2520;     /* Deep Coffee Ground */
+  --jde-cream: #FAF6EE;             /* Warm Almond Cream (Page Background) */
+  --jde-cream-dark: #F3EBDD;        /* Cream Surface Darker (Headers & Footers) */
+  --jde-gold: #B49664;              /* Warm Golden Tan ("A COFFEE FOR EVERY CUP" Headline) */
+  --jde-gold-hover: #9E8252;        /* Gold Hover */
+  --jde-gold-light: #F7F1E6;        /* Soft Gold Tint */
+  --jde-green: #3F7A4C;             /* Botanical Leaf / Ready State */
+  --jde-green-light: #EBF3ED;
+  --jde-border: #E8DFCE;            /* Warm Neutral Border */
+  --jde-card-bg: #FFFFFF;           /* Clean Card Surface */
+  --jde-text: #332D27;              /* Deep Espresso Body Text */
+  --jde-text-muted: #7E766D;        /* Warm Muted Grey */
+}
+
+/* Base & Typography */
+body {
+  font-family: 'Sarabun', 'Prompt', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--jde-cream) !important;
+  color: var(--jde-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Headings default */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--jde-espresso);
+  font-weight: 600;
+}
+
+/* Force pure white on dark/colored containers */
+.text-white,
+.text-white h1, .text-white h2, .text-white h3, 
+.text-white h4, .text-white h5, .text-white h6,
+.bg-danger h1, .bg-danger h2, .bg-danger h3,
+.bg-danger h4, .bg-danger h5, .bg-danger h6,
+.bg-primary h1, .bg-primary h2, .bg-primary h3,
+.bg-primary h4, .bg-primary h5, .bg-primary h6,
+.bg-success h1, .bg-success h2, .bg-success h3,
+.bg-success h4, .bg-success h5, .bg-success h6,
+.bg-warning h1, .bg-warning h2, .bg-warning h3,
+.bg-warning h4, .bg-warning h5, .bg-warning h6 {
+  color: #FFFFFF !important;
+}
+
+.text-white small,
+.bg-danger small,
+.bg-danger .text-white-50,
+.card-header.bg-danger small,
+.card-header.bg-danger .text-white-50 {
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+/* ─── Navbar: JDE Peet's Roasted Terracotta with Espresso Accent ─── */
+.navbar.bg-danger {
+  background-color: var(--jde-terracotta) !important;
+  border-bottom: 3px solid var(--jde-espresso);
+  box-shadow: 0 4px 15px rgba(63, 58, 49, 0.12) !important;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navbar-brand img {
+  filter: brightness(0) invert(1);
+  transition: transform 0.2s ease;
+}
+
+.navbar-brand:hover img {
+  transform: scale(1.03);
+}
+
+.navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.95) !important;
+  transition: color 0.2s ease;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: #FFFFFF !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* ─── Summary Cards: Bright White Text & High Contrast ─── */
+.card-summary {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(63, 58, 49, 0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  color: #FFFFFF !important;
+}
+
+.card-summary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(63, 58, 49, 0.2);
+}
+
+/* Force all elements inside card-summary to be crisp white */
+.card-summary h2,
+.card-summary .display-6,
+.card-summary h1, .card-summary h3, .card-summary h4,
+.card-summary div,
+.card-summary span,
+.card-summary strong {
+  color: #FFFFFF !important;
+}
+
+.card-summary i {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.card-summary .text-white-50,
+.card-summary .text-dark-50 {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-weight: 500;
+}
+
+/* Summary Card 1: Total Tanks (Deep Espresso) */
+.card-summary.bg-primary {
+  background: linear-gradient(135deg, var(--jde-espresso) 0%, var(--jde-espresso-dark) 100%) !important;
+}
+
+/* Summary Card 2: Checked Tanks (Botanical Green) */
+.card-summary.bg-success {
+  background: linear-gradient(135deg, #2E6B39 0%, #1F4C27 100%) !important;
+}
+
+/* Summary Card 3: Unchecked Tanks (Warm Headline Gold) */
+.card-summary.bg-warning {
+  background: linear-gradient(135deg, #A8864E 0%, #8C6D36 100%) !important;
+}
+
+/* Summary Card 4: Not Ready (Terracotta) */
+.card-summary.bg-danger {
+  background: linear-gradient(135deg, var(--jde-terracotta) 0%, var(--jde-terracotta-dark) 100%) !important;
+}
+
+/* ─── Buttons: JDE Palette ─── */
+.btn-danger {
+  background-color: var(--jde-terracotta) !important;
+  border-color: var(--jde-terracotta) !important;
+  color: #FFFFFF !important;
+}
+
+.btn-danger:hover, .btn-danger:focus, .btn-danger:active {
+  background-color: var(--jde-terracotta-dark) !important;
+  border-color: var(--jde-terracotta-dark) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 12px rgba(160, 72, 48, 0.3) !important;
+}
+
+.btn-outline-danger {
+  color: var(--jde-terracotta) !important;
+  border-color: var(--jde-terracotta) !important;
+}
+
+.btn-outline-danger:hover {
+  background-color: var(--jde-terracotta) !important;
+  border-color: var(--jde-terracotta) !important;
+  color: #FFFFFF !important;
+}
+
+.btn-warning {
+  background-color: var(--jde-gold) !important;
+  border-color: var(--jde-gold) !important;
+  color: #FFFFFF !important;
+}
+
+.btn-warning:hover, .btn-warning:focus {
+  background-color: var(--jde-gold-hover) !important;
+  border-color: var(--jde-gold-hover) !important;
+  color: #FFFFFF !important;
+}
+
+.btn-outline-warning {
+  color: var(--jde-gold) !important;
+  border-color: var(--jde-gold) !important;
+}
+
+.btn-outline-warning:hover {
+  background-color: var(--jde-gold) !important;
+  border-color: var(--jde-gold) !important;
+  color: #FFFFFF !important;
+}
+
+.btn-success {
+  background-color: var(--jde-green) !important;
+  border-color: var(--jde-green) !important;
+  color: #FFFFFF !important;
+}
+
+.btn-success:hover {
+  background-color: #34673F !important;
+  border-color: #34673F !important;
+  color: #FFFFFF !important;
+}
+
+.btn-outline-success {
+  color: var(--jde-green) !important;
+  border-color: var(--jde-green) !important;
+}
+
+.btn-outline-success:hover {
+  background-color: var(--jde-green) !important;
+  color: #FFFFFF !important;
+}
+
+/* ─── Color Overrides ─── */
+.bg-danger {
+  background-color: var(--jde-terracotta) !important;
+  color: #FFFFFF !important;
+}
+
+.text-danger {
+  color: var(--jde-terracotta) !important;
+}
+
+.bg-warning {
+  background-color: var(--jde-gold) !important;
+  color: #FFFFFF !important;
+}
+
+.text-warning {
+  color: var(--jde-gold) !important;
+}
+
+.text-primary {
+  color: var(--jde-espresso) !important;
+}
+
+/* ─── Cards & Containers ─── */
+.card {
+  background-color: var(--jde-card-bg);
+  border: 1px solid var(--jde-border) !important;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(63, 58, 49, 0.05);
+}
+
+.card-header.bg-light {
+  background-color: var(--jde-cream-dark) !important;
+  border-bottom: 1px solid var(--jde-border) !important;
+  color: var(--jde-espresso) !important;
+}
+
+.card-header.bg-warning {
+  background-color: var(--jde-gold) !important;
+  color: #FFFFFF !important;
+}
+
+.card-header.bg-danger {
+  background-color: var(--jde-terracotta) !important;
+  color: #FFFFFF !important;
+}
+
+.card-footer.bg-light {
+  background-color: var(--jde-cream-dark) !important;
+  border-top: 1px solid var(--jde-border) !important;
+}
+
+/* ─── Table & DataTables ─── */
+.table {
+  background-color: var(--jde-card-bg);
+  border-color: var(--jde-border);
+  color: var(--jde-text);
+}
+
+.table-dark {
+  background-color: var(--jde-espresso) !important;
+  border-color: var(--jde-espresso-dark) !important;
+}
+
+.table-dark th {
+  background-color: var(--jde-espresso) !important;
+  color: #F8F5EE !important;
+  border-bottom: 2px solid var(--jde-gold) !important;
+  font-weight: 600;
+  font-size: 0.88rem;
+  white-space: nowrap;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+  background-color: rgba(250, 246, 238, 0.7) !important;
+}
+
+.table-hover > tbody > tr:hover > * {
+  background-color: var(--jde-gold-light) !important;
+}
+
+.table td {
+  vertical-align: middle;
+  font-size: 0.9rem;
+  border-color: var(--jde-border);
+}
+
+/* ─── Form Controls & Selects ─── */
+.form-control, .form-select {
+  border-color: var(--jde-border);
+  background-color: #FFFFFF;
+  color: var(--jde-text);
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--jde-terracotta);
+  box-shadow: 0 0 0 0.25rem rgba(160, 72, 48, 0.18);
+}
+
+.input-group-text {
+  background-color: var(--jde-cream-dark);
+  border-color: var(--jde-border);
+  color: var(--jde-text-muted);
+}
+
+/* ─── Badges ─── */
+.badge-ready {
+  background-color: var(--jde-green);
+  color: white;
+}
+
+.badge-not-ready {
+  background-color: var(--jde-terracotta);
+  color: white;
+}
+
+/* P3 Super Admin Badge */
+.bg-purple {
+  background-color: #5C3A47 !important; /* Deep Roasted Plum/Espresso */
+  color: #FFFFFF !important;
+}
+
+/* ─── Radio Cards in Check Page ─── */
+.check-card {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid var(--jde-border);
+  background-color: #FFFFFF;
+}
+
+.check-card:hover {
+  border-color: var(--jde-gold);
+}
+
+.btn-check:checked + .btn-outline-success {
+  background-color: var(--jde-green) !important;
+  border-color: var(--jde-green) !important;
+  color: white !important;
+  font-weight: bold;
+}
+
+.btn-check:checked + .btn-outline-danger {
+  background-color: var(--jde-terracotta) !important;
+  border-color: var(--jde-terracotta) !important;
+  color: white !important;
+  font-weight: bold;
+}
+
+/* ─── Thumbnail preview ─── */
+.img-thumb-preview {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--jde-border);
+  transition: transform 0.2s;
+}
+
+.img-thumb-preview:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 10px rgba(63, 58, 49, 0.2);
+}
+
+/* ─── DataTables Pagination ─── */
+.page-item.active .page-link {
+  background-color: var(--jde-terracotta) !important;
+  border-color: var(--jde-terracotta) !important;
+  color: #FFFFFF !important;
+}
+
+.page-link {
+  color: var(--jde-terracotta);
+  background-color: #FFFFFF;
+  border-color: var(--jde-border);
+}
+
+.page-link:hover {
+  color: var(--jde-terracotta-dark);
+  background-color: var(--jde-cream);
+  border-color: var(--jde-border);
+}
+
+/* ─── Footer ─── */
+footer {
+  margin-top: auto;
+  background-color: var(--jde-cream-dark) !important;
+  border-top: 1px solid var(--jde-border) !important;
+  color: var(--jde-text-muted) !important;
+}
