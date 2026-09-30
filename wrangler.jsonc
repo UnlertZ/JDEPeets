@@ -1,9 +1,16 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "jdepeets",
+  "name": "jdetankproject",
   "main": "_worker.js",
   "compatibility_date": "2024-09-30",
   "assets": {
     "directory": "."
-  }
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "jdefireextinguisher",
+      "database_id": "aec6a610-ec7c-49c4-aecf-5fe39cc05034"
+    }
+  ]
 }

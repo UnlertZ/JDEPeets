@@ -1,0 +1,8 @@
+name = "firetank"
+compatibility_date = "2024-09-30"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "jdefireextinguisher"
+database_id = "aec6a610-ec7c-49c4-aecf-5fe39cc05034"
