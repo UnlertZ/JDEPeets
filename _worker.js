@@ -2,7 +2,22 @@
  * _worker.js — Universal Gateway สำหรับ Cloudflare Workers & Pages
  * Self-contained 100% ไม่มี import ภายนอก ป้องกันปัญหาโมดูล resolve ไม่เจอ
  */
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
 
+    // ตัวอย่าง: Route สำหรับดึงข้อมูลจาก Database
+    if (url.pathname === "/api/data") {
+      const { results } = await env.DB.prepare("SELECT * FROM my_table").all();
+      return Response.json(results);
+    }
+
+    // หากเข้าหน้าปกติ ให้ Return คำตอบหรือเชื่อมโยงระบบปกติ
+    return new Response("Hello World from Worker!", {
+      headers: { "content-type": "text/html;charset=UTF-8" }
+    });
+  }
+};
 function getDaysSinceCheck(lastcheckVal) {
   if (!lastcheckVal) return null;
   const s = String(lastcheckVal).trim();
